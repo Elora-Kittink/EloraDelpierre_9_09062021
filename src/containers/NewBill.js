@@ -24,7 +24,7 @@ export default class NewBill {
     console.log(file);
     console.log(filePath);
     console.log(fileName);
-    if (fileName.match(/.(jpg|jpeg)$/i)) {
+    if (fileName.match(/.(jpg|jpeg|png)$/i)) {
       $("#btn-send-bill").prop("disabled", false);
       this.firestore.storage
         .ref(`justificatifs/${fileName}`)
