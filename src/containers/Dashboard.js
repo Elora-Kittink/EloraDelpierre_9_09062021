@@ -82,12 +82,13 @@ export default class {
   };
 
   handleEditTicket(e, bill, bills) {
+    console.log("this.counter", this.counter);
+    console.log("this.id", this.id);
+    console.log("bill.id", bill.id);
+
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
-    console.log(this.counter);
-    console.log(this.id);
-    console.log(bill.id);
-    console.log(this.counter % 2);
+    console.log(" %2", this.counter, this.counter % 2);
     if (this.counter % 2 === 0) {
       // fait apparaitre la note
       console.log("je rentre dans la condition");
@@ -97,7 +98,7 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: "#2A2B35" });
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
-      // this.counter++;
+      this.counter++;
     } else {
       console.log("je rentre pas dans la condition");
       // fait apparaitre l'icone grise
@@ -135,7 +136,7 @@ export default class {
   };
 
   handleShowTickets(e, bills, index) {
-    // console.log(this.counter);
+    console.log("counter handleshow", this.counter);
     if (this.counter === undefined || this.index !== index) this.counter = 0;
     if (this.index === undefined || this.index !== index) this.index = index;
     if (this.counter % 2 === 0) {
