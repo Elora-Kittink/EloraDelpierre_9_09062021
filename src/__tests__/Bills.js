@@ -6,6 +6,7 @@ import { bills } from "../fixtures/bills.js";
 import firebase from "../__mocks__/firebase.js";
 import { handleClickNewBill } from "../containers/Bills.js";
 import { handleClickIconEye } from "../containers/Bills.js";
+import { ROUTES } from "../constants/routes";
 
 describe("Given I am connected as an employee", () => {
   describe("when Bills page is loading", () => {
@@ -53,9 +54,22 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
       const eyeIcon = screen.getAllByTestId("icon-eye");
-      const modale = screen.getByTestId("modale-icon-eye");
-      userEvent.click(eyeIcon); //simule un evenement click
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      const firestore = null;
+      const newBills = new Bills({
+        document,
+        onNavigate,
+        firestore,
+        localStorage: window.localStorage,
+      });
+      const handleClickIconEye = jest.fn(newBills.handleClickIconEye(eyeIcon[0]));
+      eyeIcon[0].addEventListener("click", handleClickIconEye);
+      userEvent.click(eyeIcon[0]); //simule un evenement click
       expect(handleClickIconEye).toHaveBeenCalled();
+      const modale = screen.getByTestId("modale-icon-eye");
       expect(modale).toBeTruthy();
     });
   });
@@ -94,9 +108,23 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
       const newBillbtn = screen.getByTestId("btn-new-bill");
-      const newBillForm = screen.getByTestId("form-new-bill"); // dans NewBillUI
-      userEvent.click(newBillbtn);
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      const firestore = null;
+      const newBills = new Bills({
+        document,
+        onNavigate,
+        firestore,
+        localStorage: window.localStorage,
+      });
+      const handleClickNewBill = jest.fn(newBills.handleClickNewBill);
+      newBillbtn.addEventListener("click", handleClickNewBill);
+
+      fireEvent.click(newBillbtn);
       expect(handleClickNewBill).toHaveBeenCalled();
+      const newBillForm = screen.getByTestId("form-new-bill"); // dans NewBillUI
       expect(newBillForm).toBeTruthy();
     });
   });

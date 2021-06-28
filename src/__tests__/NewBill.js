@@ -14,13 +14,11 @@ describe("Given I am connected as an employee", () => {
       expect(billIcon !== verticalLayout).toBe(true);
     });
     //-------------------------------TEST CLASS----------------------------------
-    test("it show a new instance of NewBill", () => {
-      const result = new Bills({ document, onNavigate, firestore, localStorage });
-      expect(result).toBeInstanceOf(Bills);
-    });
     test("Then it should display NewBill page", () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
+      const newBill = screen.getByTestId("form-new-bill");
+      expect(newBill).toBeTruthy();
     });
   });
   //------------------------------TEST METHODE-------------------------------------
@@ -39,7 +37,8 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill page and I click on submit button", () => {
     describe("When I filled all the field correctly", () => {
       test("Then it should create the bill", () => {
-        document.body.innerHTML = NewBillUI();
+        const html = NewBillUI();
+        document.body.innerHTML = html;
         expect(handleSubmit()).toHaveBeenCalled();
       });
     });

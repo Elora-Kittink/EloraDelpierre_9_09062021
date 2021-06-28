@@ -33,6 +33,7 @@ export default class NewBill {
 
       alert("Choisir un format d'image.jpeg ou .png ou .jpg");
     }
+    console.log($("#btn-send-bill").prop("disabled"));
   };
   handleSubmit = (e) => {
     e.preventDefault();
