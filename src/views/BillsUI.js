@@ -21,7 +21,19 @@ const row = (bill) => {
 };
 
 const rows = (data) => {
-  return data && data.length ? data.map((bill) => row(bill)).join("") : "";
+  //Si data est défini et que c'est un tableau (donc il a une longueur)
+  if (data && data.length) {
+    //Alors on trie le tableau en fonction de la date
+    data.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    })
+    //Et on renvoie un tableau dont le contenu de chaque ligne est joint sans espacements
+    return data.map((bill) => row(bill)).join("")
+  }
+  //sinon
+  else {
+    return ""
+  }
 };
 
 export default ({ data: bills, loading, error }) => {
@@ -71,9 +83,7 @@ export default ({ data: bills, loading, error }) => {
           </thead>
           <tbody data-testid="tbody">
             ${rows(
-              bills.sort(function (a, b) {
-                return new Date(b.date) - new Date(a.date);
-              })
+              bills
             )}
           </tbody>
           </table>

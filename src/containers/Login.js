@@ -72,7 +72,6 @@ export default class Login {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            console.log(`User with ${user.email} exists`);
             return true;
           } else {
             return false;

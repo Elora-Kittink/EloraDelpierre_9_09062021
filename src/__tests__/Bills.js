@@ -51,6 +51,7 @@ describe("Given I am connected as an employee", () => {
   });
   describe("when I am on Bills page ans I click on eye icon", () => {
     test("Then it should display a modale", () => {
+      $.fn.modal = jest.fn();
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
       const eyeIcon = screen.getAllByTestId("icon-eye");
