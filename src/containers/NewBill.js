@@ -16,8 +16,10 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
+    console.log(file);
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
+    console.log("test");
     if (fileName.match(/.(jpg|jpeg|png)$/i)) {
       $("#btn-send-bill").prop("disabled", false);
       this.firestore.storage
@@ -29,6 +31,7 @@ export default class NewBill {
           this.fileName = fileName;
         });
     } else {
+      console.log(filePath);
       $("#btn-send-bill").prop("disabled", true);
 
       alert("Choisir un format d'image.jpeg ou .png ou .jpg");

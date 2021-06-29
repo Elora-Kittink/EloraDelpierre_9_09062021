@@ -27,8 +27,20 @@ describe("Given I am connected as an employee", () => {
       test("Then I stay on newBillPage, an error alert appears and submit button is disabled", () => {
         document.body.innerHTML = NewBillUI();
         const input = screen.getByTestId("file");
+
         const fileTest = new File([""], "test.pdf", { type: "application/pdf" });
-        const submitbtn = document.getElementById("btn-send-bill");
+        // const fileList = [fileTest]
+        // console.log(input)
+        // console.log(input.files)
+
+        // input.files.push(fileTest)
+        // const submitbtn = document.getElementById("btn-send-bill");
+        //  var event = document.createEvent('Event', fileList);
+
+        //  input.change(event) //simule un evenement click
+
+        // input.simulate('change', {target: {files: [fileTest]}})
+        userEvent.upload(input, fileTest);
         expect(submitbtn.disabled).toBe(true);
         expect(window, "alert").toHaveBeenCalled();
       });
