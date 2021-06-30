@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import { bills } from "../fixtures/bills.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -24,25 +25,101 @@ describe("Given I am connected as an employee", () => {
   //------------------------------TEST METHODE-------------------------------------
   describe("When I am on NewBill page and I click on choisir un fichier", () => {
     describe("When I choose a .pdf document", () => {
-      test("Then I stay on newBillPage, an error alert appears and submit button is disabled", () => {
+      test("Then I stay on newBillPage, submit button is disabled", () => {
         document.body.innerHTML = NewBillUI();
         const input = screen.getByTestId("file");
-
         const fileTest = new File([""], "test.pdf", { type: "application/pdf" });
-        // const fileList = [fileTest]
-        // console.log(input)
-        // console.log(input.files)
-
-        // input.files.push(fileTest)
-        // const submitbtn = document.getElementById("btn-send-bill");
-        //  var event = document.createEvent('Event', fileList);
-
-        //  input.change(event) //simule un evenement click
-
-        // input.simulate('change', {target: {files: [fileTest]}})
+        const submitbtn = screen.getByTestId("btn-send-bill");
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const firestore = null;
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+        const handleChangeFile = jest.fn(newBill.handleChangeFile);
+        input.addEventListener("change", handleChangeFile);
         userEvent.upload(input, fileTest);
         expect(submitbtn.disabled).toBe(true);
-        expect(window, "alert").toHaveBeenCalled();
+        const newBillForm = screen.getByTestId("form-new-bill");
+        expect(newBillForm).toBeTruthy();
+      });
+    });
+    describe("When I choose a .jpeg file", () => {
+      test("Then I submit button allow me to submit", () => {
+        document.body.innerHTML = NewBillUI();
+        const input = screen.getByTestId("file");
+        const fileTest = new File(["test"], "test.jpeg", { type: "image/jpeg" });
+
+        const submitbtn = screen.getByTestId("btn-send-bill");
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const firestore = null;
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+        const handleChangeFile = jest.fn(newBill.handleChangeFile);
+        input.addEventListener("change", handleChangeFile);
+        userEvent.upload(input, fileTest);
+        console.log(input.files[0]);
+
+        expect(handleChangeFile).toHaveBeenCalled();
+        console.log(fileTest.name);
+        console.log(fileTest.name.match(/.(jpg|jpeg|png)$/i));
+        console.log(submitbtn.disabled);
+        expect(submitbtn.disabled).toBe(false);
+      });
+    });
+    describe("When I choose a .png file", () => {
+      test("Then I submit button allow me to submit", () => {
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
+
+        document.body.innerHTML = NewBillUI();
+        const input = screen.getByTestId("file");
+        const fileTest = new File(["test"], "test.png", { type: "image/png" });
+
+        const submitbtn = screen.getByTestId("btn-send-bill");
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const firestore = null;
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+        const handleChangeFile = jest.fn(newBill.handleChangeFile);
+        input.addEventListener("change", handleChangeFile);
+        fireEvent.change(input, {
+          target: {
+            files: [fileTest],
+          },
+        });
+
+        console.log(input.files[0]);
+
+        expect(handleChangeFile).toHaveBeenCalled();
+        console.log(fileTest.name);
+        console.log(fileTest.name.match(/.(jpg|jpeg|png)$/i));
+        console.log(submitbtn.disabled);
+        expect(submitbtn.disabled).toBe(false);
       });
     });
   });

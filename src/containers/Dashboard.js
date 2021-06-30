@@ -5,7 +5,7 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import USERS_TEST from "../constants/usersTest.js";
 import Logout from "./Logout.js";
 
-export const filteredBills = (data, status) => {
+export const filterBills = (data, status) => {
   return data && data.length
     ? data.filter((bill) => {
         let selectCondition;
@@ -83,15 +83,10 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
     console.log("this.counter", this.counter);
-    console.log("this.id", this.id);
-    console.log("bill.id", bill.id);
-
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
-    console.log(" %2", this.counter, this.counter % 2);
     if (this.counter % 2 === 0) {
       // fait apparaitre la note
-      console.log("je rentre dans la condition");
       bills.forEach((b) => {
         $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
       });
@@ -100,7 +95,6 @@ export default class {
       $(".vertical-navbar").css({ height: "150vh" });
       this.counter++;
     } else {
-      console.log("je rentre pas dans la condition");
       // fait apparaitre l'icone grise
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
@@ -137,11 +131,13 @@ export default class {
 
   handleShowTickets(e, bills, index) {
     console.log("counter handleshow", this.counter);
+    let filteredBills = [];
     if (this.counter === undefined || this.index !== index) this.counter = 0;
     if (this.index === undefined || this.index !== index) this.index = index;
     if (this.counter % 2 === 0) {
+      filteredBills = filterBills(bills, getStatus(this.index));
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(0deg)" });
-      $(`#status-bills-container${this.index}`).html(cards(filteredBills(bills, getStatus(this.index))));
+      $(`#status-bills-container${this.index}`).html(cards(filteredBills));
       this.counter++;
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
@@ -149,7 +145,7 @@ export default class {
       this.counter++;
     }
 
-    bills.forEach((bill) => {
+    filteredBills.forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
     });
 

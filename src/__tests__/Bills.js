@@ -76,33 +76,6 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-// describe("Given I am connected as an employee", () => {
-//   test("Then it create a new instance of bills", () => {
-//     const html = BillsUI({ data: [] });
-//     document.body.innerHTML = html;
-//     const result = new Bills({ document, onNavigate, firestore, localStorage });
-//     expect(result).toBeInstanceOf(Bills);
-//   });
-//   test("then it should display Bills page", () => {});
-// });
-
-// describe("Given I am connected as an employee", () => {
-//   describe("When I am on Bills page but it is loading", () => {
-//     test("Then, Loading page should be rendered", () => {
-//       const html = BillsUI({ loading: true });
-//       document.body.innerHTML = html;
-//       expect(screen.getAllByText("Loading...")).toBeTruthy();
-//     });
-//   });
-//   describe("When I am on Bills page but back-end send an error message", () => {
-//     test("Then, Error page should be rendered", () => {
-//       const html = BillsUI({ error: "some error message" });
-//       document.body.innerHTML = html;
-//       expect(screen.getAllByText("Erreur")).toBeTruthy();
-//     });
-//   });
-// });
-
 describe("Given I am connected as an employee", () => {
   describe("when I am on Bills page and I click on nouvelle note", () => {
     test("Then NewBill page should be displayed", () => {

@@ -59,7 +59,6 @@ export default class {
               }
             })
             .filter((bill) => bill.email === userEmail);
-          console.log(bills);
           return bills;
         })
         .catch((error) => error);
