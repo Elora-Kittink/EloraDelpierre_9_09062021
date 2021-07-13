@@ -4,8 +4,6 @@ import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
 import firebase from "../__mocks__/firebase.js";
-import { handleClickNewBill } from "../containers/Bills.js";
-import { handleClickIconEye } from "../containers/Bills.js";
 import { ROUTES } from "../constants/routes";
 
 describe("Given I am connected as an employee", () => {

@@ -3,11 +3,8 @@ import userEvent from "@testing-library/user-event";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import BillsUI from "../views/BillsUI.js";
-import { bills } from "../fixtures/bills.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { ROUTES } from "../constants/routes";
-import { request } from "express";
-import { get } from "jquery";
 import firebase from "../__mocks__/firebase.js";
 window.alert = jest.fn();
 
@@ -91,11 +88,7 @@ describe("Given I am connected as an employee", () => {
             files: [fileTest],
           },
         });
-        console.log(input.files[0]);
-
         expect(handleChangeFile).toHaveBeenCalled();
-        console.log(fileTest.name);
-        console.log(fileTest.name.match(/.(jpg|jpeg|png)$/i));
         expect(input.files[0].name).toBe("test.jpeg");
       });
     });
