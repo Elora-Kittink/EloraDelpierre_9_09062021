@@ -9,6 +9,7 @@ import { ROUTES } from "../constants/routes";
 import { request } from "express";
 import { get } from "jquery";
 import firebase from "../__mocks__/firebase.js";
+window.alert = jest.fn();
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -31,6 +32,7 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill page and I click on choisir un fichier", () => {
     describe("When I choose a .pdf document", () => {
       test("Then I stay on newBillPage, submit button is disabled", () => {
+        window.alert.mockClear();
         document.body.innerHTML = NewBillUI();
         const input = screen.getByTestId("file");
         const fileTest = new File([""], "test.pdf", { type: "application/pdf" });
@@ -48,13 +50,15 @@ describe("Given I am connected as an employee", () => {
         const handleChangeFile = jest.fn(newBill.handleChangeFile);
         input.addEventListener("change", handleChangeFile);
         userEvent.upload(input, fileTest);
-        expect(submitbtn.disabled).toBe(true);
+
         const newBillForm = screen.getByTestId("form-new-bill");
         expect(newBillForm).toBeTruthy();
+        expect(window.alert).toHaveBeenCalledWith("Choisir un format d'image .jpeg ou .png ou .jpg");
       });
     });
     describe("When I choose a .jpeg file", () => {
       test("Then submit button allow me to submit", async () => {
+        window.alert.mockClear();
         Object.defineProperty(window, "localStorage", {
           value: localStorageMock,
         });
@@ -67,7 +71,7 @@ describe("Given I am connected as an employee", () => {
 
         document.body.innerHTML = NewBillUI();
         const input = screen.getByTestId("file");
-        const fileTest = new File(["test"], "test.txt", { type: "text/txt" });
+        const fileTest = new File(["test"], "test.jpeg", { type: "image/jpeg" });
 
         const submitbtn = screen.getByTestId("btn-send-bill");
         const onNavigate = (pathname) => {
@@ -92,10 +96,7 @@ describe("Given I am connected as an employee", () => {
         expect(handleChangeFile).toHaveBeenCalled();
         console.log(fileTest.name);
         console.log(fileTest.name.match(/.(jpg|jpeg|png)$/i));
-        console.log(submitbtn.disabled);
-        expect(input.files[0].name).toBe("test.txt");
-
-        expect(global.alert).toHaveBeenCalledTimes(1);
+        expect(input.files[0].name).toBe("test.jpeg");
       });
     });
     describe("When I am on NewBill and I choose a wrong extension type for image", () => {
@@ -176,13 +177,7 @@ describe("Given I am connected as an employee", () => {
           },
         });
 
-        console.log(input.files[0]);
-
         expect(handleChangeFile).toHaveBeenCalled();
-        console.log(fileTest.name);
-        console.log(fileTest.name.match(/.(jpg|jpeg|png)$/i));
-        console.log(submitbtn.disabled);
-        expect(submitbtn.disabled).toBe(false);
       });
     });
   });
@@ -300,20 +295,20 @@ describe("Given I am a user connected as Employee", () => {
         email: "a@a",
         pct: 20,
       };
-      const getSpy = jest.spyOn(firebase, "post");
+      const postSpy = jest.spyOn(firebase, "post");
       const bills = await firebase.post(newBill);
-      expect(getSpyPost).toHaveBeenCalledTimes(1);
+      expect(postSpy).toHaveBeenCalledTimes(1);
       expect(bills.data.length).toBe(5);
     });
-    test("fetches bills from an API and fails with 404 message error", async () => {
-      firebase.get.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")));
+    test("Add bill to API and fails with 404 message error", async () => {
+      firebase.post.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")));
       const html = BillsUI({ error: "Erreur 404" });
       document.body.innerHTML = html;
       const message = await screen.getByText(/Erreur 404/);
       expect(message).toBeTruthy();
     });
-    test("fetches messages from an API and fails with 500 message error", async () => {
-      firebase.get.mockImplementationOnce(() => Promise.reject(new Error("Erreur 500")));
+    test("Add bill to API and fails with 500 message error", async () => {
+      firebase.post.mockImplementationOnce(() => Promise.reject(new Error("Erreur 500")));
       const html = BillsUI({ error: "Erreur 500" });
       document.body.innerHTML = html;
       const message = await screen.getByText(/Erreur 500/);
