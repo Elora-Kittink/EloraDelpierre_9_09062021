@@ -49,14 +49,14 @@ describe("Given I am connected as an employee", () => {
   });
   describe("when I am on Bills page ans I click on eye icon", () => {
     test("Then it should display a modale", () => {
-      $.fn.modal = jest.fn();
+      $.fn.modal = jest.fn(); // sinon ne reconnait pas $("#modaleFile").modal(  ) dans bills.js
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
       const eyeIcon = screen.getAllByTestId("icon-eye");
       const onNavigate = (pathname) => {
+        // structure du onNavigate pour le constructeur
         document.body.innerHTML = ROUTES({ pathname });
       };
-
       const firestore = null;
       const newBills = new Bills({
         document,
@@ -69,7 +69,7 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(eyeIcon[0]); //simule un evenement click
       expect(handleClickIconEye).toHaveBeenCalled();
       const modale = screen.getByTestId("modale-icon-eye");
-      expect(modale).toBeTruthy();
+      expect(modale).toBeTruthy(); // vérifie que la modale s'affiche
     });
   });
 });
@@ -81,9 +81,9 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = html;
       const newBillbtn = screen.getByTestId("btn-new-bill");
       const onNavigate = (pathname) => {
+        // structure du onNavigate pour le constructeur
         document.body.innerHTML = ROUTES({ pathname });
       };
-
       const firestore = null;
       const newBills = new Bills({
         document,
@@ -93,11 +93,10 @@ describe("Given I am connected as an employee", () => {
       });
       const handleClickNewBill = jest.fn(newBills.handleClickNewBill);
       newBillbtn.addEventListener("click", handleClickNewBill);
-
       fireEvent.click(newBillbtn);
       expect(handleClickNewBill).toHaveBeenCalled();
       const newBillForm = screen.getByTestId("form-new-bill"); // dans NewBillUI
-      expect(newBillForm).toBeTruthy();
+      expect(newBillForm).toBeTruthy(); //vérifie la présence de la page newbill
     });
   });
 });
@@ -107,10 +106,10 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Bills", () => {
     test("fetches bills from mock API GET", async () => {
-      const getSpy = jest.spyOn(firebase, "get");
-      const bills = await firebase.get();
+      const getSpy = jest.spyOn(firebase, "get"); //espionne la methode get dans firebase pour pouvoir l'utiliser
+      const bills = await firebase.get(); // on recupère ce qu'il y a dans firebase
       expect(getSpy).toHaveBeenCalledTimes(1);
-      expect(bills.data.length).toBe(4);
+      expect(bills.data.length).toBe(4); //on vérifie qu'on récupéré tout ce qu'il y avait
     });
     test("fetches bills from an API and fails with 404 message error", async () => {
       firebase.get.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")));
